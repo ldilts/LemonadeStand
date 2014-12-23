@@ -36,15 +36,54 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k14-8z-OP6" userLabel="Supplies View">
                                 <rect key="frame" x="16" y="72" width="568" height="220"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWo-R5-4Om">
+                                        <rect key="frame" x="8" y="8" width="42" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="45" id="9Th-gq-548"/>
+                                            <constraint firstAttribute="width" constant="42" id="DZA-tX-TiS"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                        <color key="textColor" red="0.14901960780000001" green="0.76078431369999999" blue="0.50588235290000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lemons: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qc0-DE-Sd4">
+                                        <rect key="frame" x="8" y="61" width="130" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="eae-ou-prW"/>
+                                            <constraint firstAttribute="width" constant="130" id="h8k-VD-Cy8"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ice: 0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y0h-zP-1nG">
+                                        <rect key="frame" x="146" y="60" width="130" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="Icr-Sd-d9k"/>
+                                            <constraint firstAttribute="width" constant="130" id="OiZ-0R-44v"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="cWo-R5-4Om" firstAttribute="top" secondItem="k14-8z-OP6" secondAttribute="topMargin" id="SVl-QC-m81"/>
+                                    <constraint firstItem="cWo-R5-4Om" firstAttribute="leading" secondItem="k14-8z-OP6" secondAttribute="leadingMargin" id="Uu8-Nf-jX7"/>
+                                    <constraint firstItem="Qc0-DE-Sd4" firstAttribute="leading" secondItem="cWo-R5-4Om" secondAttribute="leading" id="gPh-hr-GEi"/>
+                                    <constraint firstItem="Y0h-zP-1nG" firstAttribute="top" secondItem="k14-8z-OP6" secondAttribute="top" constant="60" id="hBw-0G-HqS"/>
+                                    <constraint firstItem="Y0h-zP-1nG" firstAttribute="leading" secondItem="Qc0-DE-Sd4" secondAttribute="trailing" constant="8" symbolic="YES" id="kZe-S4-1Bl"/>
+                                    <constraint firstItem="Qc0-DE-Sd4" firstAttribute="top" secondItem="cWo-R5-4Om" secondAttribute="bottom" constant="8" symbolic="YES" id="tDj-EX-BZ0"/>
+                                </constraints>
                             </view>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZtK-zJ-iJg">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZtK-zJ-iJg">
                                 <rect key="frame" x="16" y="300" width="568" height="64"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="ISb-cV-QeN"/>
                                 </constraints>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -87,6 +126,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Lemonade" id="rCk-GC-COI"/>
                     <connections>
+                        <outlet property="balanceLabel" destination="cWo-R5-4Om" id="9n1-kz-hYc"/>
+                        <outlet property="iceLabel" destination="Y0h-zP-1nG" id="vEi-2D-H8M"/>
+                        <outlet property="lemonLabel" destination="Qc0-DE-Sd4" id="AtB-Gn-XYr"/>
                         <outlet property="outputTextView" destination="ZtK-zJ-iJg" id="rRy-bs-9vX"/>
                         <outlet property="pageControl" destination="g55-ca-SQe" id="9lb-xT-72n"/>
                         <outlet property="scrollView" destination="Foh-Ne-Anv" id="Bhq-vl-VhA"/>
