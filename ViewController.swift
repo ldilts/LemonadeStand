@@ -20,6 +20,11 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var lemonLabel: UILabel!
     @IBOutlet weak var iceLabel: UILabel!
     
+    var mixIceTextField = UITextField()
+    var mixLemonTextField = UITextField()
+    var shopIceTextField = UITextField()
+    var shopLemonTextField = UITextField()
+    
     
     var lemonadeStand = Stand()
     
@@ -40,11 +45,13 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         ]
         self.navigationController?.navigationBar.titleTextAttributes = attributes
         
-        self.suppliesView.layer.borderWidth = 1
-        self.suppliesView.layer.borderColor = self.lemonYellow
+//        self.suppliesView.layer.borderWidth = 1
+//        self.suppliesView.layer.borderColor = self.lemonYellow
         self.suppliesView.layer.cornerRadius = 10
         self.outputTextView.layer.cornerRadius = 10
         self.startButton.layer.cornerRadius = 10
+        
+        updateView()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -64,6 +71,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             height: pagesScrollViewSize.height)
         
         loadVisiblePages()
+        updateView()
     }
     
     func loadPage(page: Int) {
@@ -102,6 +110,18 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         var rightTextField = UITextField()
         self.makeTextField(rightTextField, frame: CGRectMake((((rightMinusButton.frame.origin.x + 23) + (rightPlusButton.frame.origin.x + 23))/2) - 20, ((((rightMinusButton.frame.origin.y + 23) + (rightPlusButton.frame.origin.y + 23))/2) - 15), 40, 30))
         
+        switch page {
+            case 0:
+                self.mixIceTextField = leftTextField
+                self.mixLemonTextField = rightTextField
+            case 1:
+                self.shopIceTextField = leftTextField
+                self.shopLemonTextField = rightTextField
+            default:
+                self.mixIceTextField = leftTextField
+                self.mixLemonTextField = rightTextField
+        }
+        
         newPageView.addSubview(leftMinusButton)
         newPageView.addSubview(leftPlusButton)
         newPageView.addSubview(rightMinusButton)
@@ -117,6 +137,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         textField.frame = frame
         textField.backgroundColor = UIColor.whiteColor()
         textField.layer.cornerRadius = 5.0
+        textField.textAlignment = .Center
         textField.userInteractionEnabled = false
     }
     
@@ -134,42 +155,50 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     // Mix View
     func firstLeftMinusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.removeIce()
+        updateView()
         printStuff()
     }
     
     func firstLeftPlusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.addIce()
+        updateView()
         printStuff()
     }
     
     func firstRightMinusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.removeLemon()
+        updateView()
         printStuff()
     }
     
     func firstRightPlusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.addLemon()
+        updateView()
         printStuff()
     }
     
     // Shop View
     func secondLeftMinusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.returnIce()
+        updateView()
         printStuff()
     }
     
     func secondLeftPlusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.purchaseIce()
+        updateView()
         printStuff()
     }
     
     func secondRightMinusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.returnLemon()
+        updateView()
         printStuff()
     }
     
     func secondRightPlusButtonTapped(sender:UIButton!) {
         self.lemonadeStand.purchaseLemon()
+        updateView()
         printStuff()
     }
     
@@ -181,6 +210,17 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         println("Lemonade Mix:")
         println("   Lemons: " + "\(self.lemonadeStand.lemonadeMix.lemons)")
         println("   Ice: " + "\(self.lemonadeStand.lemonadeMix.ice)" + "\n\n")
+    }
+    
+    func updateView() {
+        self.balanceLabel.text = "$" + "\(self.lemonadeStand.balance)"
+        self.iceLabel.text = "Ice: " + "\(self.lemonadeStand.ice)"
+        self.lemonLabel.text = "Lemons: " + "\(self.lemonadeStand.lemons)"
+        
+        self.mixIceTextField.text = "\(self.lemonadeStand.lemonadeMix.ice)"
+        self.mixLemonTextField.text = "\(self.lemonadeStand.lemonadeMix.lemons)"
+        self.shopIceTextField.text = "\(self.lemonadeStand.ice)"
+        self.shopLemonTextField.text = "\(self.lemonadeStand.lemons)"
     }
 
     func loadVisiblePages() {

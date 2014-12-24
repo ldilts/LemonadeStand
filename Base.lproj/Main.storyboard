@@ -38,10 +38,10 @@
                                 <rect key="frame" x="16" y="72" width="568" height="220"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cWo-R5-4Om">
-                                        <rect key="frame" x="8" y="8" width="42" height="45"/>
+                                        <rect key="frame" x="8" y="8" width="189" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="45" id="9Th-gq-548"/>
-                                            <constraint firstAttribute="width" constant="42" id="DZA-tX-TiS"/>
+                                            <constraint firstAttribute="width" constant="189" id="DZA-tX-TiS"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="textColor" red="0.14901960780000001" green="0.76078431369999999" blue="0.50588235290000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
