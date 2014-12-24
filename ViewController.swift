@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController, UIScrollViewDelegate {
     
@@ -25,8 +26,13 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     var shopIceTextField = UITextField()
     var shopLemonTextField = UITextField()
     
+    var outputString: String = ""
+//    var lemonadeStand = Stand()
+    var lemonadeStandGame = Game()
     
-    var lemonadeStand = Stand()
+    var glassUp = AVAudioPlayer()
+    var glassDown = AVAudioPlayer()
+    var classicBeep = AVAudioPlayer()
     
     var pageViews: [UIView?] = []
     var pageColors: [UIColor] = []
@@ -34,14 +40,35 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     let lemonYellow = UIColor(red: 247/255.0, green: 220/255.0, blue: 111/255.0, alpha: 1).CGColor
     let StoreYellow = UIColor(red: 247/255.0, green: 225/255.0, blue: 136/255.0, alpha: 1)
     let leafGreen = UIColor(red: 38/255.0, green: 194/255.0, blue: 129/255.0, alpha: 1)
+    let negativeRed = UIColor(red: 216/255.0, green: 86/255.0, blue: 55/255.0, alpha: 1)
+    
+    func setupAudioPlayerWithFile(file:NSString, type:NSString) -> AVAudioPlayer  {
+        //1
+        var path = NSBundle.mainBundle().pathForResource(file, ofType:type)
+        var url = NSURL.fileURLWithPath(path!)
+        
+        //2
+        var error: NSError?
+        
+        //3
+        var audioPlayer:AVAudioPlayer?
+        audioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
+        
+        //4
+        return audioPlayer!
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        self.glassUp = self.setupAudioPlayerWithFile("Glass Up", type:"wav")
+        self.glassDown = self.setupAudioPlayerWithFile("Glass Down", type:"wav")
+        self.classicBeep = self.setupAudioPlayerWithFile("Classic Beep", type:"wav")
+        
         var attributes = [
             NSForegroundColorAttributeName: UIColor.blackColor(),
-            NSFontAttributeName: UIFont(name: "Lobster 1.3", size: 24)!
+            NSFontAttributeName: UIFont(name: "Lobster 1.3", size: 26)!
         ]
         self.navigationController?.navigationBar.titleTextAttributes = attributes
         
@@ -89,14 +116,22 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         newPageView.frame = frame
         
         var target = ""
+        var title = ""
         switch page {
             case 0:
                 target = "first"
+                title = "Mix"
             case 1:
                 target = "second"
+                title = "Shop"
             default:
                 target = ""
         }
+        
+        var titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+        titleLabel.frame = CGRectMake(10, 5, 50, 30)
         
         var leftMinusButton = self.makeButton(NSSelectorFromString(target + "LeftMinusButtonTapped:"), frame: CGRectMake(10, newPageView.frame.height/2 - 23, 46, 46), image: "Minus Button")
         var leftPlusButton = self.makeButton(NSSelectorFromString(target + "LeftPlusButtonTapped:"), frame: CGRectMake(leftMinusButton.frame.origin.x + 46 + 50, newPageView.frame.height/2 - 23, 46, 46), image: "Plus Button")
@@ -109,6 +144,26 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         
         var rightTextField = UITextField()
         self.makeTextField(rightTextField, frame: CGRectMake((((rightMinusButton.frame.origin.x + 23) + (rightPlusButton.frame.origin.x + 23))/2) - 20, ((((rightMinusButton.frame.origin.y + 23) + (rightPlusButton.frame.origin.y + 23))/2) - 15), 40, 30))
+        
+//        var leftIconImageView = UIImageView()
+//        leftIconImageView.frame = CGRectMake((leftTextField.frame.origin.x + (leftTextField.frame.width/2)) - 50 - 11.5, leftTextField.frame.origin.y + leftTextField.frame.height + 5, 23, 23)
+//        leftIconImageView.image = UIImage(named: "snowflake")
+        
+        var leftLabel = UILabel()
+        leftLabel.text = "Ice"
+        leftLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleCaption1)
+        leftLabel.textAlignment = .Center
+        leftLabel.frame = CGRectMake((leftTextField.frame.origin.x + (leftTextField.frame.width/2)) - 50, leftTextField.frame.origin.y + leftTextField.frame.height + 5, 100, 25)
+        
+//        var rightIconImageView = UIImageView()
+//        rightIconImageView.frame = CGRectMake(0, 0, 23, 23)
+//        rightIconImageView.image = UIImage(named: "LemonIcon")
+        
+        var rightLabel = UILabel()
+        rightLabel.text = "Lemon"
+        rightLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleCaption1)
+        rightLabel.textAlignment = .Center
+        rightLabel.frame = CGRectMake((rightTextField.frame.origin.x + (rightTextField.frame.width/2)) - 50, rightTextField.frame.origin.y + rightTextField.frame.height + 5, 100, 25)
         
         switch page {
             case 0:
@@ -128,6 +183,11 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         newPageView.addSubview(rightPlusButton)
         newPageView.addSubview(leftTextField)
         newPageView.addSubview(rightTextField)
+        newPageView.addSubview(leftLabel)
+        newPageView.addSubview(rightLabel)
+        newPageView.addSubview(titleLabel)
+//        newPageView.addSubview(leftIconImageView)
+//        newPageView.addSubview(rightIconImageView)
         scrollView.addSubview(newPageView)
         
         pageViews[page] = newPageView
@@ -154,73 +214,127 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     // Mix View
     func firstLeftMinusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.removeIce()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.removeIce()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func firstLeftPlusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.addIce()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.addIce()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func firstRightMinusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.removeLemon()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.removeLemon()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func firstRightPlusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.addLemon()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.addLemon()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     // Shop View
     func secondLeftMinusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.returnIce()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.returnIce()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func secondLeftPlusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.purchaseIce()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.purchaseIce()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func secondRightMinusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.returnLemon()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.returnLemon()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
     func secondRightPlusButtonTapped(sender:UIButton!) {
-        self.lemonadeStand.purchaseLemon()
+//        self.classicBeep.play()
+        self.lemonadeStandGame.lemonadeStand.purchaseLemon()
         updateView()
-        printStuff()
+//        printStuff()
     }
     
-    // Delete!
-    func printStuff() {
-        println("Lemons: " + "\(self.lemonadeStand.lemons)")
-        println("Ice: " + "\(self.lemonadeStand.ice)")
-        println("Balance: " + "\(self.lemonadeStand.balance)")
-        println("Lemonade Mix:")
-        println("   Lemons: " + "\(self.lemonadeStand.lemonadeMix.lemons)")
-        println("   Ice: " + "\(self.lemonadeStand.lemonadeMix.ice)" + "\n\n")
+    @IBAction func startDayButtonTapped(sender: AnyObject) {
+//        var alert = UIAlertController()
+//        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: {(action: UIAlertAction!) in
+//                // What happens when the user taps 'Ok'? That goes in here
+//            }))
+//        self.presentViewController(alert, animated: true, completion: nil)
+        
+        if self.lemonadeStandGame.lemonadeStand.lemonadeMix.ice <= 0 {
+            self.makeAlertView("ice")
+        } else {
+            if self.lemonadeStandGame.lemonadeStand.lemonadeMix.lemons <= 0 {
+                self.makeAlertView("lemon")
+            } else {
+                self.lemonadeStandGame.startDay()
+                self.outputString += "\(self.lemonadeStandGame.customers.count)" + " customers visited the lemonade stand today.\n" + "\(self.lemonadeStandGame.payingCustomers)" + " of those customers purchased some lemonade.\n\n"
+                
+                // Check if game over
+                if (self.lemonadeStandGame.lemonadeStand.lemons == 0 || self.lemonadeStandGame.lemonadeStand.ice == 0) {
+                    if !self.lemonadeStandGame.lemonadeStand.isBalance() {
+                        self.outputString += "Not enough money to buy more supplies! Game over! :(\n\n"
+                        self.glassDown.play()
+                        self.lemonadeStandGame = Game()
+                    } else {
+                        self.glassUp.play()
+                    }
+                } else {
+                    self.glassUp.play()
+                }
+                self.updateView()
+            }
+        }
+        
+        
+        
+        
+    }
+    
+    func makeAlertView(item: String) {
+        var alert = UIAlertController(title: "Don't forget the " + item + "!", message: "Add " + item + " to your lemonade mix before you start your day.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.view.tintColor = self.leafGreen
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func updateView() {
-        self.balanceLabel.text = "$" + "\(self.lemonadeStand.balance)"
-        self.iceLabel.text = "Ice: " + "\(self.lemonadeStand.ice)"
-        self.lemonLabel.text = "Lemons: " + "\(self.lemonadeStand.lemons)"
+        if !self.lemonadeStandGame.lemonadeStand.isBalance() {
+            balanceLabel.textColor = self.negativeRed
+        } else {
+            balanceLabel.textColor = self.leafGreen
+        }
         
-        self.mixIceTextField.text = "\(self.lemonadeStand.lemonadeMix.ice)"
-        self.mixLemonTextField.text = "\(self.lemonadeStand.lemonadeMix.lemons)"
-        self.shopIceTextField.text = "\(self.lemonadeStand.ice)"
-        self.shopLemonTextField.text = "\(self.lemonadeStand.lemons)"
+        self.balanceLabel.text = "$" + "\(self.lemonadeStandGame.lemonadeStand.balance)"
+        self.iceLabel.text = "x " + "\(self.lemonadeStandGame.lemonadeStand.ice)"
+        self.lemonLabel.text = "x " + "\(self.lemonadeStandGame.lemonadeStand.lemons)"
+        
+        self.mixIceTextField.text = "\(self.lemonadeStandGame.lemonadeStand.lemonadeMix.ice)"
+        self.mixLemonTextField.text = "\(self.lemonadeStandGame.lemonadeStand.lemonadeMix.lemons)"
+        self.shopIceTextField.text = "\(self.lemonadeStandGame.lemonadeStand.ice)"
+        self.shopLemonTextField.text = "\(self.lemonadeStandGame.lemonadeStand.lemons)"
+        
+        self.outputTextView.text = self.outputString
+        
+        // scroll to the bottom
+        var range = NSMakeRange(countElements(self.outputTextView.text) - 1, 0)
+        self.outputTextView.scrollRangeToVisible(range)
     }
 
     func loadVisiblePages() {

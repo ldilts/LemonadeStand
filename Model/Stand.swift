@@ -14,12 +14,17 @@ class Stand {
     var ice: Int = 1
     var balance: Double = 10.0
     
-    var store = Store()
+    var lemonade: Lemonade = Lemonade()
+    var store: Store = Store()
     
     var lemonadeMix:(lemons:Int, ice:Int) = (0, 0)
     
     func Stand() {
         println("Hello")
+    }
+    
+    func mixLemonade() {
+        self.lemonade.mixLemonade(lemonadeMix)
     }
     
     func addLemon() {
@@ -53,7 +58,7 @@ class Stand {
     }
 
     func isBalance() -> Bool {
-        if balance <= 0.0 {
+        if balance < 0.0 {
             return false
         } else {
             return true
